@@ -2,7 +2,23 @@ abstract class Reads {
     public getSampleName() {
         this.metadata.sampleName
     }
-    
+
+    public getReplicate() {
+        this.metadata.replicate
+    }
+
+    public getTarget() {
+        this.metadata.target
+    }
+
+    public getMode() {
+        this.metadata.mode
+    }
+
+    public getControlType() {
+        this.metadata.controlType
+    }
+
     public getSampleNumber() {
         this.metadata.sampleNumber
     }
