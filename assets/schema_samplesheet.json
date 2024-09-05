@@ -19,7 +19,7 @@
         "meta": "lane"
       },
       "replicate": {
-        "type": "string",
+        "type": ["integer", "string"],
         "errorMessage": "Replicate ID for the library.",
         "meta": "replicate"
       },
