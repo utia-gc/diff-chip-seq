@@ -5,7 +5,7 @@ class ReadsInputPERep2Lane1 extends Reads {
     LinkedHashMap metadata = [
         sampleName:   'wt_ip1',
         lane:         '001',
-        rep:          '2',
+        replicate:    '2',
         target:       'FLAG-IP1',
         readType:     'paired',
         mode:         'control', 
