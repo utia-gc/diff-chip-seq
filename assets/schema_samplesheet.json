@@ -5,7 +5,7 @@
   "type": "array",
   "items": {
     "type": "object",
-    "required": ["sampleName"],
+    "required": ["sampleName", "replicate", "target", "controlType"],
     "properties": {
       "sampleName": {
         "type": "string",
@@ -17,6 +17,22 @@
         "type": ["integer", "string"],
         "errorMessage": "Sequencing lane for the library, must be 0-999. Also excepts literal three digit lane numbers, e.g. '001'",
         "meta": "lane"
+      },
+      "replicate": {
+        "type": "string",
+        "errorMessage": "Replicate ID for the library.",
+        "meta": "replicate"
+      },
+      "target": {
+        "type": "string",
+        "errorMessage": "Target molecule for the ChIP library.",
+        "meta": "target"
+      },
+      "controlType": {
+        "type": "string",
+        "enum": ["none", "input", "mock"],
+        "errorMessage": "Type of control library for the ChIP library. Must be one of: [none, input, mock].",
+        "meta": "controlType"
       },
       "reads1": {
         "type": "string",
