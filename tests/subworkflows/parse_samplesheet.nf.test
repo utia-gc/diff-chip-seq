@@ -6,6 +6,7 @@ nextflow_workflow {
 
     test("Parse_Samplesheet fails -- sampleNames missing.") {
         tag 'nf-schema'
+        tag 'invalid'
 
         when {
             params {
@@ -34,6 +35,7 @@ nextflow_workflow {
 
     test("Parse_Samplesheet fails -- replicate missing.") {
         tag 'nf-schema'
+        tag 'invalid'
 
         when {
             params {
@@ -62,6 +64,7 @@ nextflow_workflow {
 
     test("Parse_Samplesheet fails -- target missing.") {
         tag 'nf-schema'
+        tag 'invalid'
 
         when {
             params {
@@ -90,6 +93,7 @@ nextflow_workflow {
 
     test("Parse_Samplesheet fails -- controlType missing.") {
         tag 'nf-schema'
+        tag 'invalid'
 
         when {
             params {
@@ -111,6 +115,35 @@ nextflow_workflow {
             assert workflow.stdout.contains("ERROR ~ Validation of samplesheet failed!")
             assert workflow.stderr.contains("-> Entry 1: Missing required field(s): controlType")
             assert workflow.stderr.contains("-> Entry 2: Missing required field(s): controlType")
+        }
+
+    }
+
+
+    test("Parse_Samplesheet fails -- invalid controlType value.") {
+        tag 'nf-schema'
+        tag 'invalid'
+
+        when {
+            params {
+                publishDirReports = "${outputDir}/reports"
+                publishDirData    = "${outputDir}/data"
+            }
+            workflow {
+                """
+                input[0] = "${projectDir}/tests/data/samplesheets/invalid/invalid-controlType.csv"
+                """
+            }
+        }
+
+        then {
+            // nf-schema samplesheetToList() causes workflow failure with exit status 1 when samplesheet requirements aren't met
+            assert workflow.failed
+            assert workflow.exitStatus == 1
+            // nf-schema samplesheetToList() throws error messages on stdout and stderr when required param(s) not supplied
+            assert workflow.stdout.contains("ERROR ~ Validation of samplesheet failed!")
+            assert workflow.stderr.contains("-> Entry 1: Error for field 'controlType' (control): Type of control library for the ChIP library. Must be one of: [none, input, mock].")
+            assert workflow.stderr.contains("-> Entry 2: Error for field 'controlType' (control): Type of control library for the ChIP library. Must be one of: [none, input, mock].")
         }
 
     }
