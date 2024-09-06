@@ -49,7 +49,17 @@ abstract class Reads {
      * @return String fastq stem name.
      */
     public getStemName() {
-        "${this.getSampleName()}_L${this.getLane()}"
+        // if the sample metadata contains all the chip information, build the root of the stem name with it
+        def stemNameRoot = (this.mode && this.target && this.replicate)
+            ? "${this.getSampleName()}_${(this.getMode() == 'control') ? this.getControlType() : this.getMode()}_${this.getTarget()}_rep${this.getReplicate()}"
+            : this.getSampleName()
+
+        // if the sample metadata contains the lane info, add it to the root of the stem name
+        def stemName = (this.lane)
+            ? "${stemNameRoot}_L${this.getLane()}"
+            : stemNameRoot
+
+        return stemName
     }
 
     public getRGFields() {
