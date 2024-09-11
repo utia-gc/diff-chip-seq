@@ -1,0 +1,31 @@
+nextflow_workflow {
+
+    name "Test Workflow CALL_PEAKS"
+    script "workflows/call_peaks.nf"
+    workflow "CALL_PEAKS"
+
+    test("CALL_PEAKS succeeds") {
+        // instantiate helper objects
+        def refs = new RefsEnsembl()
+
+
+        when {
+            params {
+                publishDirReports = "${outputDir}/reports"
+                publishDirData    = "${outputDir}/data"
+            }
+            workflow {
+                """
+                input[0] = file("${projectDir}/${refs.getGenome()}")
+                """
+            }
+        }
+
+        then {
+            // test workflow status
+            assert workflow.success
+        }
+
+    }
+
+}
