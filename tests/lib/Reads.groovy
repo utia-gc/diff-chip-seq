@@ -62,6 +62,25 @@ abstract class Reads {
         return stemName
     }
 
+
+    /**
+     * Get the stem name of a fastq file without the lane information.
+     * 
+     * Get the stem name of a fastq file. 
+     * For fastq files that follow Illumina naming conventions this should be the same as '<SampleName>'.
+     * @see https://support.illumina.com/help/BaseSpace_OLH_009008/Content/Source/Informatics/BS/NamingConvention_FASTQ-files-swBS.htm
+     *
+     * @return String fastq stem name.
+     */
+    public getStemNameWithoutLane() {
+        // if the sample metadata contains all the chip information, build the root of the stem name with it
+        def stemName = (this.mode && this.target && this.replicate)
+            ? "${this.getSampleName()}_${(this.getMode() == 'control') ? this.getControlType() : this.getMode()}_${this.getTarget()}_rep${this.getReplicate()}"
+            : this.getSampleName()
+
+        return stemName
+    }
+
     public getRGFields() {
         [
             'ID': "${this.getSampleName()}.${this.getLane()}",
