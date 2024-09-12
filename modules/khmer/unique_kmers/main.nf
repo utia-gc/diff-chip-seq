@@ -2,7 +2,7 @@ process khmer_unique_kmers {
     tag "${fasta}"
 
     // Process settings label
-    container 'https://depot.galaxyproject.org/singularity/khmer:3.0.0a3--py38h94ffb2d_3'
+    label 'khmer'
 
     // Resources labels
     label 'def_cpu'
