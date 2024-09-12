@@ -1,4 +1,5 @@
 include { khmer_unique_kmers } from '../modules/khmer/unique_kmers'
+include { macs3_callpeak     } from '../modules/macs3/callpeak'
 
 
 workflow CALL_PEAKS {
@@ -43,6 +44,11 @@ workflow CALL_PEAKS {
                 ]
             }
             .set { ch_paired_chip_control_alignments }
+
+        macs3_callpeak(
+            ch_paired_chip_control_alignments,
+            khmer_unique_kmers.out.uniqueKmers
+        )
 }
 
 
