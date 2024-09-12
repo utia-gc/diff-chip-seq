@@ -49,6 +49,10 @@ workflow CALL_PEAKS {
             ch_paired_chip_control_alignments,
             khmer_unique_kmers.out.uniqueKmers
         )
+        ch_callPeaksLog = macs3_callpeak.out.callpeakLog
+
+    emit:
+        callPeaksLog = ch_callPeaksLog
 }
 
 

@@ -21,7 +21,9 @@ process macs3_callpeak {
         val   effectiveGenomeSize
 
     output:
-        tuple val(metadata), path("${stemName}*"), emit: outs
+        tuple val(metadata), path("${stemName}_peaks.xls"),        emit: callpeakLog
+        tuple val(metadata), path("${stemName}_peaks.narrowPeak"), emit: narrowPeak
+        tuple val(metadata), path("${stemName}_summits.bed"),      emit: summits
 
     script:
         String args = new Args(task.ext).buildArgsString()

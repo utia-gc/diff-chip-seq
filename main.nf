@@ -65,6 +65,7 @@ workflow {
         ch_alignmentsMergedSortedByCoord,
         ch_genome
     )
+    ch_callPeaksLog = CALL_PEAKS.out.callPeaksLog
 
     CHECK_QUALITY(
         ch_reads_raw,
@@ -72,6 +73,7 @@ workflow {
         ch_trim_log,
         ch_genome_index,
         ch_alignmentsIndividualSortedByCoord,
-        ch_alignmentsMergedSortedByCoord
+        ch_alignmentsMergedSortedByCoord,
+        ch_callPeaksLog
     )
 }
