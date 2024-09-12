@@ -62,6 +62,7 @@ workflow {
     ch_alignmentsMergedSortedByName      = MAP_READS.out.alignmentsMergedSortedByName
 
     CALL_PEAKS(
+        ch_alignmentsMergedSortedByCoord,
         ch_genome
     )
 
