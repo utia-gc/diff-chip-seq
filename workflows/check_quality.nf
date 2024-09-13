@@ -1,5 +1,5 @@
 include { QC_Alignments           } from '../subworkflows/qc_alignments.nf'
-include { QC_Peaks                } from '../subworkflows/qc_peaks.nf'
+include { QC_ChIP                 } from '../subworkflows/qc_chip.nf'
 include { QC_Reads                } from '../subworkflows/qc_reads.nf'
 include { multiqc as multiqc_full } from "../modules/multiqc.nf"
 
@@ -29,10 +29,10 @@ workflow CHECK_QUALITY {
         )
         ch_multiqc_alignments = QC_Alignments.out.multiqc
 
-        QC_Peaks(
+        QC_ChIP(
             peaksLog
         )
-        ch_multiqcPeaks = QC_Peaks.out.multiqc
+        ch_multiqcPeaks = QC_ChIP.out.multiqc
 
         ch_multiqc_full = Channel.empty()
             .concat(ch_multiqc_reads)

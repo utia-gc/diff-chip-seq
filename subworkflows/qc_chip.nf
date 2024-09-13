@@ -1,12 +1,12 @@
-include { multiqc as multiqc_peaks } from "../modules/multiqc.nf"
+include { multiqc as multiqc_chip } from "../modules/multiqc.nf"
 
 
-workflow QC_Peaks {
+workflow QC_ChIP {
     take:
         peaksLog
 
     main:
-        ch_multiqcPeaks = Channel.empty()
+        ch_multiqcChIP = Channel.empty()
             .concat( peaksLog.map { metadata, peakLog -> peakLog } )
             .collect(
                 // sort based on file name
@@ -15,12 +15,12 @@ workflow QC_Peaks {
                 }
             )
 
-        multiqc_peaks(
-            ch_multiqcPeaks,
+        multiqc_chip(
+            ch_multiqcChIP,
             file("${projectDir}/assets/multiqc_config.yaml"),
-            'peaks'
+            'chip'
         )
 
     emit:
-        multiqc = ch_multiqcPeaks
+        multiqc = ch_multiqcChIP
 }
