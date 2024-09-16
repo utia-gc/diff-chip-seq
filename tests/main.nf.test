@@ -332,7 +332,7 @@ nextflow_pipeline {
             // test workflow status
             assert workflow.success
             /*
-                Count number succeeded tasks: 10 + (7 * (n fastq pairs)) + (7 * (n samples)) + (1 * (n chip-control sample pairs))
+                Count number succeeded tasks: 12 + (7 * (n fastq pairs)) + (7 * (n samples)) + (1 * (n chip-control sample pairs))
                     - 2: Unzip genome and annotations
                     - 2: Count bases in genome -- Index fasta and count
                     - 1: Build reference genome index
@@ -347,9 +347,10 @@ nextflow_pipeline {
                     - 1 * (n samples): Samtools stats
                     - 1 * (n samples): Filter BAMs
                     - 1 * (n chip-control sample pairs): Call peaks
+                    - 2: Binned summary plots -- Summarize and PCA plot
                     - 4: MultiQC -- Reads, mappings, peaks, full
             */
-            assert workflow.trace.succeeded().size() == 68
+            assert workflow.trace.succeeded().size() == 70
 
             // test raw FastQC html reports and zip files published to reports dir
             assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_raw_R1_fastqc.html").exists()
@@ -429,6 +430,9 @@ nextflow_pipeline {
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.xls").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.narrowPeak").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_summits.bed").exists()
+            // test deepTools PCA plots published to reports dir
+            assert path("${params.publishDirReports}/.chip/pca.png").exists()
+            assert path("${params.publishDirReports}/.chip/pca-data.txt").exists()
             // test MultiQC reports and data published to reports dir
             assert path("${params.publishDirReports}/multiqc/reads/reads.html").exists()
             assert path("${params.publishDirReports}/multiqc/reads/reads_data/").exists()
@@ -466,7 +470,7 @@ nextflow_pipeline {
             // test workflow status
             assert workflow.success
             /*
-                Count number succeeded tasks: 8 + (7 * (n fastq pairs)) + (7 * (n samples)) + (1 * (n chip-control sample pairs))
+                Count number succeeded tasks: 10 + (7 * (n fastq pairs)) + (7 * (n samples)) + (1 * (n chip-control sample pairs))
                     - 2: Count bases in genome -- Index fasta and count
                     - 1: Build reference genome index
                     - 1: Compute effective genome size
@@ -480,9 +484,10 @@ nextflow_pipeline {
                     - 1 * (n samples): Samtools stats
                     - 1 * (n samples): Filter BAMs
                     - 1 * (n chip-control sample pairs): Call peaks
+                    - 2: Binned summary plots -- Summarize and PCA plot
                     - 4: MultiQC -- Reads, mappings, peaks, full
             */
-            assert workflow.trace.succeeded().size() == 66
+            assert workflow.trace.succeeded().size() == 68
 
             // test raw FastQC html reports and zip files published to reports dir
             assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_raw_R1_fastqc.html").exists()
@@ -562,6 +567,9 @@ nextflow_pipeline {
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.xls").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.narrowPeak").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_summits.bed").exists()
+            // test deepTools PCA plots published to reports dir
+            assert path("${params.publishDirReports}/.chip/pca.png").exists()
+            assert path("${params.publishDirReports}/.chip/pca-data.txt").exists()
             // test MultiQC reports and data published to reports dir
             assert path("${params.publishDirReports}/multiqc/reads/reads.html").exists()
             assert path("${params.publishDirReports}/multiqc/reads/reads_data/").exists()
@@ -597,7 +605,7 @@ nextflow_pipeline {
             // test workflow status
             assert workflow.success
             /*
-                Count number succeeded tasks: 10 + (7 * (n fastq pairs)) + (7 * (n samples)) + (1 * (n chip-control sample pairs))
+                Count number succeeded tasks: 12 + (7 * (n fastq pairs)) + (7 * (n samples)) + (1 * (n chip-control sample pairs))
                     - 2: Unzip genome and annotations
                     - 2: Count bases in genome -- Index fasta and count
                     - 1: Build reference genome index
@@ -612,9 +620,10 @@ nextflow_pipeline {
                     - 1 * (n samples): Samtools stats
                     - 1 * (n samples): Filter BAMs
                     - 1 * (n chip-control sample pairs): Call peaks
+                    - 2: Binned summary plots -- Summarize and PCA plot
                     - 4: MultiQC -- Reads, mappings, peaks, full
             */
-            assert workflow.trace.succeeded().size() == 68
+            assert workflow.trace.succeeded().size() == 70
 
             // test raw FastQC html reports and zip files published to reports dir
             assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_raw_R1_fastqc.html").exists()
@@ -694,6 +703,9 @@ nextflow_pipeline {
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.xls").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.narrowPeak").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_summits.bed").exists()
+            // test deepTools PCA plots published to reports dir
+            assert path("${params.publishDirReports}/.chip/pca.png").exists()
+            assert path("${params.publishDirReports}/.chip/pca-data.txt").exists()
             // test MultiQC reports and data published to reports dir
             assert path("${params.publishDirReports}/multiqc/reads/reads.html").exists()
             assert path("${params.publishDirReports}/multiqc/reads/reads_data/").exists()

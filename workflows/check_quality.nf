@@ -31,6 +31,7 @@ workflow CHECK_QUALITY {
         ch_multiqc_alignments = QC_Alignments.out.multiqc
 
         QC_ChIP(
+            alignmentsFiltered,
             peaksLog
         )
         ch_multiqcPeaks = QC_ChIP.out.multiqc
