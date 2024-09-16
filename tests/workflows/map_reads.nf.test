@@ -61,6 +61,15 @@ nextflow_workflow {
         then {
             // test workflow status
             assert workflow.success
+            /*
+                Count number succeeded tasks: 1 + (2 * (n fastq pairs)) + (4 * (n samples))
+                    - 1: Build reference genome index
+                    - 1 * (n fastq pairs): Map reads
+                    - 1 * (n fastq pairs): Sort and index SAMs
+                    - 3 * (n samples): Merge SAM, Mark dups, Sort by name
+                    - 1 * (n samples): Filter BAMs
+            */
+            assert workflow.trace.succeeded().size() == 9
 
             // test alignments for each individual coordinate sorted sample-lane
             with(workflow.out.alignmentsIndividualSortedByCoord) {
@@ -98,6 +107,17 @@ nextflow_workflow {
                     assert size() == 2
                     // test alignments file
                     assert get(1) ==~ /^.*\/${readsLane1.getSampleName()}\.bam/
+                }
+            }
+            // test alignments for each merged, coordinate sorted, and filtered sample
+            with(workflow.out.alignmentsMergedFiltered) {
+                assert size() == 1
+                with(get(0)) {
+                    assert size() == 3
+                    // test alignments file
+                    assert get(1) ==~ /^.*\/${readsLane1.getSampleName()}_filtered\.bam/
+                    // test indexed alignments file
+                    assert get(2) ==~ /^.*\/${readsLane1.getSampleName()}_filtered\.bam\.bai/
                 }
             }
 
@@ -164,6 +184,15 @@ nextflow_workflow {
         then {
             // test workflow status
             assert workflow.success
+            /*
+                Count number succeeded tasks: 1 + (2 * (n fastq pairs)) + (4 * (n samples))
+                    - 1: Build reference genome index
+                    - 1 * (n fastq pairs): Map reads
+                    - 1 * (n fastq pairs): Sort and index SAMs
+                    - 3 * (n samples): Merge SAM, Mark dups, Sort by name
+                    - 1 * (n samples): Filter BAMs
+            */
+            assert workflow.trace.succeeded().size() == 9
 
             // test alignments for each individual coordinate sorted sample-lane
             with(workflow.out.alignmentsIndividualSortedByCoord) {
@@ -201,6 +230,17 @@ nextflow_workflow {
                     assert size() == 2
                     // test alignments file
                     assert get(1) ==~ /^.*\/${readsLane1.getSampleName()}\.bam/
+                }
+            }
+            // test alignments for each merged, coordinate sorted, and filtered sample
+            with(workflow.out.alignmentsMergedFiltered) {
+                assert size() == 1
+                with(get(0)) {
+                    assert size() == 3
+                    // test alignments file
+                    assert get(1) ==~ /^.*\/${readsLane1.getSampleName()}_filtered\.bam/
+                    // test indexed alignments file
+                    assert get(2) ==~ /^.*\/${readsLane1.getSampleName()}_filtered\.bam\.bai/
                 }
             }
 

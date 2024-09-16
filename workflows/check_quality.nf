@@ -12,6 +12,7 @@ workflow CHECK_QUALITY {
         genome_index
         alignmentsIndividual
         alignmentsMerged
+        alignmentsFiltered
         peaksLog
 
     main:

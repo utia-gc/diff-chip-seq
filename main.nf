@@ -60,9 +60,10 @@ workflow {
     ch_alignmentsIndividualSortedByCoord = MAP_READS.out.alignmentsIndividualSortedByCoord
     ch_alignmentsMergedSortedByCoord     = MAP_READS.out.alignmentsMergedSortedByCoord
     ch_alignmentsMergedSortedByName      = MAP_READS.out.alignmentsMergedSortedByName
+    ch_alignmentsMergedFiltered          = MAP_READS.out.alignmentsMergedFiltered
 
     CALL_PEAKS(
-        ch_alignmentsMergedSortedByCoord,
+        ch_alignmentsMergedFiltered,
         ch_genome
     )
     ch_callPeaksLog = CALL_PEAKS.out.callPeaksLog
@@ -74,6 +75,7 @@ workflow {
         ch_genome_index,
         ch_alignmentsIndividualSortedByCoord,
         ch_alignmentsMergedSortedByCoord,
+        ch_alignmentsMergedFiltered,
         ch_callPeaksLog
     )
 }
