@@ -1,7 +1,7 @@
 include { multiqc as multiqc_chip } from "../modules/multiqc.nf"
 include { multi_bam_summary       } from '../modules/deeptools/multiBamSummary'
 include { plot_correlation        } from '../modules/deeptools/plotCorrelation'
-include { plot_pca                } from '../modules/deeptools/plot_pca'
+include { plot_pca                } from '../modules/deeptools/plotPCA'
 
 
 workflow QC_ChIP {
