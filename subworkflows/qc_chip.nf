@@ -1,5 +1,6 @@
 include { multiqc as multiqc_chip } from "../modules/multiqc.nf"
 include { multi_bam_summary       } from '../modules/deeptools/multiBamSummary'
+include { plot_correlation        } from '../modules/deeptools/plotCorrelation'
 include { plot_pca                } from '../modules/deeptools/plot_pca'
 
 
@@ -16,10 +17,12 @@ workflow QC_ChIP {
         ch_binsCoverageMatrix = multi_bam_summary.out.coverageMatrix
 
         plot_pca(ch_binsCoverageMatrix)
+        plot_correlation(ch_binsCoverageMatrix)
 
         ch_multiqcChIP = Channel.empty()
             .concat( peaksLog.map { metadata, peakLog -> peakLog } )
             .concat( plot_pca.out.pcaData )
+            .concat( plot_correlation.out.correlationData )
             .collect(
                 // sort based on file name
                 sort: { a, b ->
