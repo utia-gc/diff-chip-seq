@@ -53,7 +53,7 @@ def pairChIPControlAlignments(chipAlignments, controlAlignments) {
  *
  * @param alignments A channel of alignments with shape [ metadata, bam, bai ]
  *
- * @return Two channels of ChIP alignments and Control alignments, each with shape [ metadata, bam, bai ]
+ * @return Two channels of ChIP alignments and Control alignments, each with shape [ groupingKey, metadata, bam, bai ]
  */
 def separateChIPControlAlignments(alignments) {
     // Pair ChIP and control samples for each sampleName - target - controlType - replica pair
@@ -63,26 +63,11 @@ def separateChIPControlAlignments(alignments) {
             chip: metadata.mode == "chip"
                 def meta = metadata.clone()
                 meta.remove('mode')
-                return [ buildPairChIPControlGroupKey(metadata), meta, bam, bai ]
+                return [ MetadataUtils.buildPairChIPControlGroupKey(metadata), meta, bam, bai ]
 
             control: metadata.mode == "control"
                 def meta = metadata.clone()
                 meta.remove('mode')
-                return [ buildPairChIPControlGroupKey(metadata), meta, bam, bai ]
+                return [ MetadataUtils.buildPairChIPControlGroupKey(metadata), meta, bam, bai ]
         }
 }
-
-
-String buildPairChIPControlGroupKey(metadata) {
-    // the grouping key beings with the sample name
-    ArrayList pairGroupKeyComponents = [metadata.sampleName]
-
-    // if the sample metadata contains all the chip information, add it
-    // don't add mode since this would prevent chip and control samples from having a common key
-    if (metadata.target) pairGroupKeyComponents += metadata.target
-    if (metadata.controlType) pairGroupKeyComponents += "${metadata.controlType}-control"
-    if (metadata.replicate) pairGroupKeyComponents += "rep${metadata.replicate}"
-
-    return pairGroupKeyComponents.join('_')
-}
-

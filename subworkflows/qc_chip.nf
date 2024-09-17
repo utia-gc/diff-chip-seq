@@ -1,3 +1,4 @@
+include { ChIPQC                  } from "../subworkflows/chipqc"
 include { Summarize_DeepTools     } from "../subworkflows/summarize_deeptools"
 include { multiqc as multiqc_chip } from "../modules/multiqc.nf"
 
@@ -11,6 +12,11 @@ workflow QC_ChIP {
         Summarize_DeepTools(alignmentsFiltered)
         ch_pcaData         = Summarize_DeepTools.out.pcaData
         ch_correlationData = Summarize_DeepTools.out.correlationData
+
+        ChIPQC(
+            alignmentsFiltered,
+            peaksLog
+        )
 
         ch_multiqcChIP = Channel.empty()
             .concat( peaksLog.map { metadata, peakLog -> peakLog } )
