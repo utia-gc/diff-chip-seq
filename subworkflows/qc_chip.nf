@@ -1,7 +1,5 @@
+include { Summarize_DeepTools     } from "../subworkflows/summarize_deeptools"
 include { multiqc as multiqc_chip } from "../modules/multiqc.nf"
-include { multi_bam_summary       } from '../modules/deeptools/multiBamSummary'
-include { plot_correlation        } from '../modules/deeptools/plotCorrelation'
-include { plot_pca                } from '../modules/deeptools/plotPCA'
 
 
 workflow QC_ChIP {
@@ -10,19 +8,14 @@ workflow QC_ChIP {
         peaksLog
 
     main:
-        collectBamsBais(alignmentsFiltered)
-            .set { ch_collectedBamsBais }
-
-        multi_bam_summary(ch_collectedBamsBais)
-        ch_binsCoverageMatrix = multi_bam_summary.out.coverageMatrix
-
-        plot_pca(ch_binsCoverageMatrix)
-        plot_correlation(ch_binsCoverageMatrix)
+        Summarize_DeepTools(alignmentsFiltered)
+        ch_pcaData         = Summarize_DeepTools.out.pcaData
+        ch_correlationData = Summarize_DeepTools.out.correlationData
 
         ch_multiqcChIP = Channel.empty()
             .concat( peaksLog.map { metadata, peakLog -> peakLog } )
-            .concat( plot_pca.out.pcaData )
-            .concat( plot_correlation.out.correlationData )
+            .concat( ch_pcaData )
+            .concat( ch_correlationData )
             .collect(
                 // sort based on file name
                 sort: { a, b ->
@@ -38,20 +31,4 @@ workflow QC_ChIP {
 
     emit:
         multiqc = ch_multiqcChIP
-}
-
-
-def collectBamsBais(alignments) {
-    alignments
-        .map { metadata, bam, bai ->
-            return [ bam, bai ]
-        }
-        .collect(
-            flat: false,
-            sort: { a, b ->
-                a[0].name <=> b[0].name
-            }
-        )
-        .transpose()
-        .collect(flat: false)
 }
