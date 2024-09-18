@@ -332,7 +332,7 @@ nextflow_pipeline {
             // test workflow status
             assert workflow.success
             /*
-                Count number succeeded tasks: 14 + (7 * (n fastq pairs)) + (7 * (n samples)) + (1 * (n chip-control sample pairs))
+                Count number succeeded tasks: 14 + (7 * (n fastq pairs)) + (8 * (n samples)) + (1 * (n chip-control sample pairs))
                     - 2: Unzip genome and annotations
                     - 2: Count bases in genome -- Index fasta and count
                     - 1: Build reference genome index
@@ -346,12 +346,13 @@ nextflow_pipeline {
                     - 2 * (n fastq pairs): Samtools idxstats and flagstat
                     - 1 * (n samples): Samtools stats
                     - 1 * (n samples): Filter BAMs
+                    - 1 * (n samples): Coverage tracks -- Filtered BAMs
                     - 1 * (n chip-control sample pairs): Call peaks
                     - 1: ChIPQC
                     - 3: Binned summary plots -- Summarize, PCA plot, and correlation plot
                     - 4: MultiQC -- Reads, mappings, peaks, full
             */
-            assert workflow.trace.succeeded().size() == 72
+            assert workflow.trace.succeeded().size() == 76
 
             // test raw FastQC html reports and zip files published to reports dir
             assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_raw_R1_fastqc.html").exists()
@@ -431,6 +432,11 @@ nextflow_pipeline {
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.xls").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.narrowPeak").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_summits.bed").exists()
+            // test coverage tracks for filtered BAMs published to data dir
+            assert path("${params.publishDirData}/coverage/${readsChIPPERep1Lane1.getStemNameWithoutLane()}.bw").exists()
+            assert path("${params.publishDirData}/coverage/${readsChIPPERep2Lane1.getStemNameWithoutLane()}.bw").exists()
+            assert path("${params.publishDirData}/coverage/${readsInputPERep1Lane1.getStemNameWithoutLane()}.bw").exists()
+            assert path("${params.publishDirData}/coverage/${readsInputPERep2Lane1.getStemNameWithoutLane()}.bw").exists()
             // test ChIPQC report published to reports dir
             assert path("${params.publishDirReports}/.chip/ChIPQCreport").exists()
             // test deepTools PCA plots published to reports dir
@@ -475,7 +481,7 @@ nextflow_pipeline {
             // test workflow status
             assert workflow.success
             /*
-                Count number succeeded tasks: 12 + (7 * (n fastq pairs)) + (7 * (n samples)) + (1 * (n chip-control sample pairs))
+                Count number succeeded tasks: 12 + (7 * (n fastq pairs)) + (8 * (n samples)) + (1 * (n chip-control sample pairs))
                     - 2: Count bases in genome -- Index fasta and count
                     - 1: Build reference genome index
                     - 1: Compute effective genome size
@@ -488,12 +494,13 @@ nextflow_pipeline {
                     - 2 * (n fastq pairs): Samtools idxstats and flagstat
                     - 1 * (n samples): Samtools stats
                     - 1 * (n samples): Filter BAMs
+                    - 1 * (n samples): Coverage tracks -- Filtered BAMs
                     - 1 * (n chip-control sample pairs): Call peaks
                     - 1: ChIPQC
                     - 3: Binned summary plots -- Summarize, PCA plot, and correlation plot
                     - 4: MultiQC -- Reads, mappings, peaks, full
             */
-            assert workflow.trace.succeeded().size() == 70
+            assert workflow.trace.succeeded().size() == 74
 
             // test raw FastQC html reports and zip files published to reports dir
             assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_raw_R1_fastqc.html").exists()
@@ -573,6 +580,11 @@ nextflow_pipeline {
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.xls").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.narrowPeak").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_summits.bed").exists()
+            // test coverage tracks for filtered BAMs published to data dir
+            assert path("${params.publishDirData}/coverage/${readsChIPPERep1Lane1.getStemNameWithoutLane()}.bw").exists()
+            assert path("${params.publishDirData}/coverage/${readsChIPPERep2Lane1.getStemNameWithoutLane()}.bw").exists()
+            assert path("${params.publishDirData}/coverage/${readsInputPERep1Lane1.getStemNameWithoutLane()}.bw").exists()
+            assert path("${params.publishDirData}/coverage/${readsInputPERep2Lane1.getStemNameWithoutLane()}.bw").exists()
             // test ChIPQC report published to reports dir
             assert path("${params.publishDirReports}/.chip/ChIPQCreport").exists()
             // test deepTools PCA plots published to reports dir
@@ -615,7 +627,7 @@ nextflow_pipeline {
             // test workflow status
             assert workflow.success
             /*
-                Count number succeeded tasks: 14 + (7 * (n fastq pairs)) + (7 * (n samples)) + (1 * (n chip-control sample pairs))
+                Count number succeeded tasks: 14 + (7 * (n fastq pairs)) + (8 * (n samples)) + (1 * (n chip-control sample pairs))
                     - 2: Unzip genome and annotations
                     - 2: Count bases in genome -- Index fasta and count
                     - 1: Build reference genome index
@@ -629,12 +641,13 @@ nextflow_pipeline {
                     - 2 * (n fastq pairs): Samtools idxstats and flagstat
                     - 1 * (n samples): Samtools stats
                     - 1 * (n samples): Filter BAMs
+                    - 1 * (n samples): Coverage tracks -- Filtered BAMs
                     - 1 * (n chip-control sample pairs): Call peaks
                     - 1: ChIPQC
                     - 3: Binned summary plots -- Summarize, PCA plot, and correlation plot
                     - 4: MultiQC -- Reads, mappings, peaks, full
             */
-            assert workflow.trace.succeeded().size() == 72
+            assert workflow.trace.succeeded().size() == 76
 
             // test raw FastQC html reports and zip files published to reports dir
             assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_raw_R1_fastqc.html").exists()
@@ -707,6 +720,11 @@ nextflow_pipeline {
             assert path("${params.publishDirData}/alignments/filtered/${readsInputPERep1Lane1.getStemNameWithoutLane()}_filtered.bam.bai").exists()
             assert path("${params.publishDirData}/alignments/filtered/${readsInputPERep2Lane1.getStemNameWithoutLane()}_filtered.bam").exists()
             assert path("${params.publishDirData}/alignments/filtered/${readsInputPERep2Lane1.getStemNameWithoutLane()}_filtered.bam.bai").exists()
+            // test coverage tracks for filtered BAMs published to data dir
+            assert path("${params.publishDirData}/coverage/${readsChIPPERep1Lane1.getStemNameWithoutLane()}.bw").exists()
+            assert path("${params.publishDirData}/coverage/${readsChIPPERep2Lane1.getStemNameWithoutLane()}.bw").exists()
+            assert path("${params.publishDirData}/coverage/${readsInputPERep1Lane1.getStemNameWithoutLane()}.bw").exists()
+            assert path("${params.publishDirData}/coverage/${readsInputPERep2Lane1.getStemNameWithoutLane()}.bw").exists()
             // test MACS3 peak calling outputs published to data dir
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_peaks.xls").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_peaks.narrowPeak").exists()

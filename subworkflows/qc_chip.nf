@@ -1,5 +1,6 @@
 include { ChIPQC                  } from "../subworkflows/chipqc"
 include { Summarize_DeepTools     } from "../subworkflows/summarize_deeptools"
+include { bam_coverage            } from '../modules/deeptools/bamCoverage'
 include { multiqc as multiqc_chip } from "../modules/multiqc.nf"
 
 
@@ -9,6 +10,8 @@ workflow QC_ChIP {
         peaksLog
 
     main:
+        bam_coverage(alignmentsFiltered)
+
         Summarize_DeepTools(alignmentsFiltered)
         ch_pcaData         = Summarize_DeepTools.out.pcaData
         ch_correlationData = Summarize_DeepTools.out.correlationData
