@@ -198,7 +198,7 @@ flowchart LR
 
    ```bash
    nextflow run utia-gc/diff-chip-seq \
-      -revision main \
+      -revision v0.3.0 \
       -profile nf_test
    ```
 
