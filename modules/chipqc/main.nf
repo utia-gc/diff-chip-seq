@@ -31,6 +31,9 @@ process chipqc {
         #!/usr/bin/env Rscript --vanilla
 
         library(ChIPQC)
+        library(BiocParallel)
+
+        register(SerialParam())
         
         ChIPQC(${chipqcConstructorArgs}) |> 
             ChIPQCreport(${chipqcReportArgs})
