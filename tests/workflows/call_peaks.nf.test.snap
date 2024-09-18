@@ -12,7 +12,7 @@
                             "readType": "paired",
                             "rgFields": "[ID:wt_ip1.001, SM:wt_ip1, LB:wt_ip1, PL:ILLUMINA]"
                         },
-                        "wt_ip1_FLAG-IP1-vs-input_rep1_peaks.xls:md5,f7e75b4108eddc22a190c884aa97f402"
+                        "wt_ip1_FLAG-IP1-vs-input_rep1_peaks.xls:md5,bbc047e4f6aeea092061e3be16850ec3"
                     ],
                     [
                         {
@@ -23,7 +23,7 @@
                             "readType": "paired",
                             "rgFields": "[ID:wt_ip1.001, SM:wt_ip1, LB:wt_ip1, PL:ILLUMINA]"
                         },
-                        "wt_ip1_FLAG-IP1-vs-input_rep2_peaks.xls:md5,26999449f557f8462973464a3a362e5f"
+                        "wt_ip1_FLAG-IP1-vs-input_rep2_peaks.xls:md5,4c980aef92bfab1c11bdc1e5378c9e27"
                     ]
                 ],
                 "callPeaksLog": [
@@ -36,7 +36,7 @@
                             "readType": "paired",
                             "rgFields": "[ID:wt_ip1.001, SM:wt_ip1, LB:wt_ip1, PL:ILLUMINA]"
                         },
-                        "wt_ip1_FLAG-IP1-vs-input_rep1_peaks.xls:md5,f7e75b4108eddc22a190c884aa97f402"
+                        "wt_ip1_FLAG-IP1-vs-input_rep1_peaks.xls:md5,bbc047e4f6aeea092061e3be16850ec3"
                     ],
                     [
                         {
@@ -47,7 +47,7 @@
                             "readType": "paired",
                             "rgFields": "[ID:wt_ip1.001, SM:wt_ip1, LB:wt_ip1, PL:ILLUMINA]"
                         },
-                        "wt_ip1_FLAG-IP1-vs-input_rep2_peaks.xls:md5,26999449f557f8462973464a3a362e5f"
+                        "wt_ip1_FLAG-IP1-vs-input_rep2_peaks.xls:md5,4c980aef92bfab1c11bdc1e5378c9e27"
                     ]
                 ]
             }
@@ -56,6 +56,6 @@
             "nf-test": "0.9.0",
             "nextflow": "23.10.1"
         },
-        "timestamp": "2024-09-15T18:16:26.814273425"
+        "timestamp": "2024-09-16T09:50:28.294462414"
     }
 }

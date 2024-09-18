@@ -4,6 +4,7 @@ include { gatk_MarkDuplicates } from '../modules/gatk_MarkDuplicates.nf'
 include { gatk_MergeSamFiles  } from '../modules/gatk_MergeSamFiles.nf'
 include { samtools_sort_index } from '../modules/samtools_sort_index.nf'
 include { samtools_sort_name  } from '../modules/samtools_sort_name.nf'
+include { samtools_view       } from '../modules/samtools/view'
 
 
 /**
@@ -35,8 +36,12 @@ workflow MAP_READS {
           | gatk_MarkDuplicates
           | samtools_sort_name
 
+        // filter mappings
+        samtools_view(gatk_MarkDuplicates.out.bamMarkDupIndexed)
+
     emit:
         alignmentsIndividualSortedByCoord = samtools_sort_index.out.bamSortedIndexed
         alignmentsMergedSortedByCoord     = gatk_MarkDuplicates.out.bamMarkDupIndexed
         alignmentsMergedSortedByName      = samtools_sort_name.out.bamSortedByName
+        alignmentsMergedFiltered          = samtools_view.out.bamFilteredIndexed
 }

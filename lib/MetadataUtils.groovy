@@ -46,6 +46,21 @@ static LinkedHashMap intersectListOfMetadata(metadataList) {
 }
 
 
+static String buildPairChIPControlGroupKey(metadata) {
+    // the grouping key beings with the sample name
+    ArrayList pairGroupKeyComponents = [metadata.sampleName]
+
+    // if the sample metadata contains all the chip information, add it
+    // don't add mode since this would prevent chip and control samples from having a common key
+    if (metadata.target) pairGroupKeyComponents += metadata.target
+    if (metadata.controlType) pairGroupKeyComponents += "${metadata.controlType}-control"
+    if (metadata.replicate) pairGroupKeyComponents += "rep${metadata.replicate}"
+
+    return pairGroupKeyComponents.join('_')
+}
+
+
+
 /**
  * Pad the lane number with 0s to form a lane number that conforms to Illumina's fastq name standards.
  *

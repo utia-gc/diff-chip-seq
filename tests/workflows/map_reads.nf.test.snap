@@ -57,6 +57,17 @@
                         "SRR1066657.bam:md5,6cb56a94929ed4ee9ec32a8872279738"
                     ]
                 ],
+                "3": [
+                    [
+                        {
+                            "sampleName": "SRR1066657",
+                            "sampleNumber": "3",
+                            "readType": "single"
+                        },
+                        "SRR1066657_filtered.bam:md5,cb03777516ea664515c9cbe102c7772b",
+                        "SRR1066657_filtered.bam.bai:md5,0d76977b2e36046cc176112776c5fa4e"
+                    ]
+                ],
                 "alignmentsIndividualSortedByCoord": [
                     [
                         {
@@ -91,6 +102,17 @@
                         "SRR1066657_L002.bam.bai:md5,b8acafd02e9e90062b60f409b6ebf15f"
                     ]
                 ],
+                "alignmentsMergedFiltered": [
+                    [
+                        {
+                            "sampleName": "SRR1066657",
+                            "sampleNumber": "3",
+                            "readType": "single"
+                        },
+                        "SRR1066657_filtered.bam:md5,cb03777516ea664515c9cbe102c7772b",
+                        "SRR1066657_filtered.bam.bai:md5,0d76977b2e36046cc176112776c5fa4e"
+                    ]
+                ],
                 "alignmentsMergedSortedByCoord": [
                     [
                         {
@@ -118,7 +140,7 @@
             "nf-test": "0.9.0",
             "nextflow": "23.10.1"
         },
-        "timestamp": "2024-04-02T10:19:05.063904655"
+        "timestamp": "2024-09-16T10:26:34.878090304"
     },
     "MAP_READS maps reads to a reference genome and outputs sorted BAMs -- bwa-mem2 + PE reads.": {
         "content": [
@@ -178,6 +200,17 @@
                         "SRR6924569.bam:md5,867d318141fb891cf7f11af277b5ce5f"
                     ]
                 ],
+                "3": [
+                    [
+                        {
+                            "sampleName": "SRR6924569",
+                            "sampleNumber": "1",
+                            "readType": "paired"
+                        },
+                        "SRR6924569_filtered.bam:md5,592ff322508bb77d0472f767f9ac67cc",
+                        "SRR6924569_filtered.bam.bai:md5,3ef053cfee65207bb2952619dec3e151"
+                    ]
+                ],
                 "alignmentsIndividualSortedByCoord": [
                     [
                         {
@@ -212,6 +245,17 @@
                         "SRR6924569_L002.bam.bai:md5,70e5ded34544598a2f21ca31ad56179b"
                     ]
                 ],
+                "alignmentsMergedFiltered": [
+                    [
+                        {
+                            "sampleName": "SRR6924569",
+                            "sampleNumber": "1",
+                            "readType": "paired"
+                        },
+                        "SRR6924569_filtered.bam:md5,592ff322508bb77d0472f767f9ac67cc",
+                        "SRR6924569_filtered.bam.bai:md5,3ef053cfee65207bb2952619dec3e151"
+                    ]
+                ],
                 "alignmentsMergedSortedByCoord": [
                     [
                         {
@@ -239,6 +283,6 @@
             "nf-test": "0.9.0",
             "nextflow": "23.10.1"
         },
-        "timestamp": "2024-04-02T10:19:34.770717278"
+        "timestamp": "2024-09-16T10:26:59.072377052"
     }
 }
