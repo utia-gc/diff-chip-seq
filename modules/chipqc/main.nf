@@ -22,12 +22,17 @@ process chipqc {
         path 'ChIPQCreport', emit: chipqcReport
 
     script:
+        // set arguments to supply to `ChIPQC()`
+        String chipqcConstructorArgs = (task.ext.chipqcConstructorArgs) ? "'${experimentCSV}', ${task.ext.chipqcConstructorArgs}" : "'${experimentCSV}'"
+        // set arguments to supply to `ChIPQCreport()`
+        String chipqcReportArgs      = (task.ext.chipqcReportArgs) ?: ''
+
         """
         #!/usr/bin/env Rscript --vanilla
 
         library(ChIPQC)
         
-        ChIPQC("${experimentCSV}") |> 
-            ChIPQCreport(${task.ext.chipqcReportArgs})
+        ChIPQC(${chipqcConstructorArgs}) |> 
+            ChIPQCreport(${chipqcReportArgs})
         """
 }
