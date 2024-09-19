@@ -4,6 +4,7 @@ include { Summarize_DeepTools          } from "../subworkflows/summarize_deeptoo
 include { bam_compare                  } from '../modules/deeptools/bamCompare'
 include { bam_coverage                 } from '../modules/deeptools/bamCoverage'
 include { multiqc as multiqc_chip      } from "../modules/multiqc.nf"
+include { phantompeakqualtools         } from '../modules/phantompeakqualtools'
 
 
 workflow QC_ChIP {
@@ -19,6 +20,8 @@ workflow QC_ChIP {
         ch_pairedChIPControlAlignments = Pair_ChIP_Control_Alignments.out.pairedChIPControlAlignments
         bam_compare(ch_pairedChIPControlAlignments)
 
+        phantompeakqualtools(ch_pairedChIPControlAlignments)
+
         Summarize_DeepTools(alignmentsFiltered)
         ch_pcaData         = Summarize_DeepTools.out.pcaData
         ch_correlationData = Summarize_DeepTools.out.correlationData
@@ -30,6 +33,7 @@ workflow QC_ChIP {
 
         ch_multiqcChIP = Channel.empty()
             .concat( peaksLog.map { metadata, peakLog -> peakLog } )
+            .concat( phantompeakqualtools.out.sppOut.map { metadata, sppOut -> sppOut } )
             .concat( ch_pcaData )
             .concat( ch_correlationData )
             .collect(

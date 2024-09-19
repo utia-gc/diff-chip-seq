@@ -332,7 +332,7 @@ nextflow_pipeline {
             // test workflow status
             assert workflow.success
             /*
-                Count number succeeded tasks: 14 + (7 * (n fastq pairs)) + (8 * (n samples)) + (2 * (n chip-control sample pairs))
+                Count number succeeded tasks: 14 + (7 * (n fastq pairs)) + (8 * (n samples)) + (3 * (n chip-control sample pairs))
                     - 2: Unzip genome and annotations
                     - 2: Count bases in genome -- Index fasta and count
                     - 1: Build reference genome index
@@ -348,12 +348,13 @@ nextflow_pipeline {
                     - 1 * (n samples): Filter BAMs
                     - 1 * (n samples): Coverage tracks -- Filtered BAMs
                     - 1 * (n chip-control sample pairs): Comparison coverage tracks
+                    - 1 * (n chip-control sample pairs): phantompeakqualtools
                     - 1 * (n chip-control sample pairs): Call peaks
                     - 1: ChIPQC
                     - 3: Binned summary plots -- Summarize, PCA plot, and correlation plot
                     - 4: MultiQC -- Reads, mappings, peaks, full
             */
-            assert workflow.trace.succeeded().size() == 78
+            assert workflow.trace.succeeded().size() == 80
 
             // test raw FastQC html reports and zip files published to reports dir
             assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_raw_R1_fastqc.html").exists()
@@ -485,7 +486,7 @@ nextflow_pipeline {
             // test workflow status
             assert workflow.success
             /*
-                Count number succeeded tasks: 12 + (7 * (n fastq pairs)) + (8 * (n samples)) + (2 * (n chip-control sample pairs))
+                Count number succeeded tasks: 12 + (7 * (n fastq pairs)) + (8 * (n samples)) + (3 * (n chip-control sample pairs))
                     - 2: Count bases in genome -- Index fasta and count
                     - 1: Build reference genome index
                     - 1: Compute effective genome size
@@ -499,13 +500,14 @@ nextflow_pipeline {
                     - 1 * (n samples): Samtools stats
                     - 1 * (n samples): Filter BAMs
                     - 1 * (n samples): Coverage tracks -- Filtered BAMs
+                    - 1 * (n chip-control sample pairs): phantompeakqualtools
                     - 1 * (n chip-control sample pairs): Comparison coverage tracks
                     - 1 * (n chip-control sample pairs): Call peaks
                     - 1: ChIPQC
                     - 3: Binned summary plots -- Summarize, PCA plot, and correlation plot
                     - 4: MultiQC -- Reads, mappings, peaks, full
             */
-            assert workflow.trace.succeeded().size() == 76
+            assert workflow.trace.succeeded().size() == 78
 
             // test raw FastQC html reports and zip files published to reports dir
             assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_raw_R1_fastqc.html").exists()
@@ -635,7 +637,7 @@ nextflow_pipeline {
             // test workflow status
             assert workflow.success
             /*
-                Count number succeeded tasks: 14 + (7 * (n fastq pairs)) + (8 * (n samples)) + (2 * (n chip-control sample pairs))
+                Count number succeeded tasks: 14 + (7 * (n fastq pairs)) + (8 * (n samples)) + (3 * (n chip-control sample pairs))
                     - 2: Unzip genome and annotations
                     - 2: Count bases in genome -- Index fasta and count
                     - 1: Build reference genome index
@@ -650,13 +652,14 @@ nextflow_pipeline {
                     - 1 * (n samples): Samtools stats
                     - 1 * (n samples): Filter BAMs
                     - 1 * (n samples): Coverage tracks -- Filtered BAMs
+                    - 1 * (n chip-control sample pairs): phantompeakqualtools
                     - 1 * (n chip-control sample pairs): Comparison coverage tracks
                     - 1 * (n chip-control sample pairs): Call peaks
                     - 1: ChIPQC
                     - 3: Binned summary plots -- Summarize, PCA plot, and correlation plot
                     - 4: MultiQC -- Reads, mappings, peaks, full
             */
-            assert workflow.trace.succeeded().size() == 78
+            assert workflow.trace.succeeded().size() == 80
 
             // test raw FastQC html reports and zip files published to reports dir
             assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_raw_R1_fastqc.html").exists()
