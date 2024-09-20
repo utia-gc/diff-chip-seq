@@ -123,8 +123,6 @@ nextflow_workflow {
 
 
     test("CALL_PEAKS calls peaks for paired ChIP and Input files -- macs3 pool replicates.") {
-        tag 'current'
-
         // instantiate helper objects
         def readsChIPPERep1Lane1  = new ReadsChIPPERep1Lane1()
         def readsInputPERep1Lane1 = new ReadsInputPERep1Lane1()
