@@ -1,5 +1,5 @@
 {
-    "CALL_PEAKS calls peaks for paired ChIP and Input files -- macs3.": {
+    "CALL_PEAKS calls peaks for paired ChIP and Input files -- macs3 individual replicates.": {
         "content": [
             {
                 "0": [
@@ -56,6 +56,41 @@
             "nf-test": "0.9.0",
             "nextflow": "23.10.1"
         },
-        "timestamp": "2024-09-16T09:50:28.294462414"
+        "timestamp": "2024-09-20T15:46:28.391004876"
+    },
+    "CALL_PEAKS calls peaks for paired ChIP and Input files -- macs3 pool replicates.": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "sampleName": "wt_ip1",
+                            "target": "FLAG-IP1",
+                            "controlType": "input",
+                            "readType": "paired",
+                            "rgFields": "[ID:wt_ip1.001, SM:wt_ip1, LB:wt_ip1, PL:ILLUMINA]"
+                        },
+                        "wt_ip1_FLAG-IP1-vs-input_peaks.xls:md5,084d2a1be11576b4af7a1663765536db"
+                    ]
+                ],
+                "callPeaksLog": [
+                    [
+                        {
+                            "sampleName": "wt_ip1",
+                            "target": "FLAG-IP1",
+                            "controlType": "input",
+                            "readType": "paired",
+                            "rgFields": "[ID:wt_ip1.001, SM:wt_ip1, LB:wt_ip1, PL:ILLUMINA]"
+                        },
+                        "wt_ip1_FLAG-IP1-vs-input_peaks.xls:md5,084d2a1be11576b4af7a1663765536db"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "23.10.1"
+        },
+        "timestamp": "2024-09-20T15:46:42.334241231"
     }
 }

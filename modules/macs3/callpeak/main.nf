@@ -21,9 +21,10 @@ process macs3_callpeak {
         val   effectiveGenomeSize
 
     output:
-        tuple val(metadata), path("${stemName}_peaks.xls"),        emit: callpeakLog
-        tuple val(metadata), path("${stemName}_peaks.narrowPeak"), emit: narrowPeak
-        tuple val(metadata), path("${stemName}_summits.bed"),      emit: summits
+        tuple val(metadata), path("${stemName}_peaks.xls"),                                                emit: callpeakLog
+        tuple val(metadata), path("${stemName}_peaks.narrowPeak"),                                         emit: narrowPeak
+        tuple val(metadata), path("${stemName}_summits.bed"),                                              emit: summits
+        tuple val(metadata), path("${stemName}_treat_pileup.bdg"), path("${stemName}_control_lambda.bdg"), emit: bedGraphs
 
     script:
         String args = new Args(task.ext).buildArgsString()
@@ -39,6 +40,7 @@ process macs3_callpeak {
             --format ${bamFormat} \\
             --gsize ${effectiveGenomeSize} \\
             --name ${stemName} \\
+            --bdg \\
             ${args}
         """
 }

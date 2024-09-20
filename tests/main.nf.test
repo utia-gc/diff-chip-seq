@@ -312,6 +312,56 @@ nextflow_pipeline {
     }
 
 
+    test("main.nf fails -- no peak calling replicate strategy.") {
+        tag 'nf-schema'
+        tag 'validate'
+        tag 'tools'
+
+        when {
+            params {
+                publishDirReports    = "${outputDir}/reports"
+                publishDirData       = "${outputDir}/data"
+                peakCallRepsStrategy = null
+            }
+        }
+
+        then {
+            // nf-schema validateParameters() causes workflow failure with exit status 1 when required param(s) don't match pattern
+            assert workflow.failed
+            assert workflow.exitStatus == 1
+            // nf-schema validateParameters() throws error messages on stdout and stderr when required param(s) don't match pattern
+            assert workflow.stdout.contains("ERROR ~ Validation of pipeline parameters failed!")
+            assert workflow.stderr.contains("* Missing required parameter(s): peakCallRepsStrategy")
+        }
+
+    }
+
+
+    test("main.nf fails -- invalid peak calling replicate strategy.") {
+        tag 'nf-schema'
+        tag 'validate'
+        tag 'tools'
+
+        when {
+            params {
+                publishDirReports    = "${outputDir}/reports"
+                publishDirData       = "${outputDir}/data"
+                peakCallRepsStrategy = "separate"
+            }
+        }
+
+        then {
+            // nf-schema validateParameters() causes workflow failure with exit status 1 when required param(s) don't match pattern
+            assert workflow.failed
+            assert workflow.exitStatus == 1
+            // nf-schema validateParameters() throws error messages on stdout and stderr when required param(s) don't match pattern
+            assert workflow.stdout.contains("ERROR ~ Validation of pipeline parameters failed!")
+            assert workflow.stderr.contains("* --peakCallRepsStrategy (separate): Peak calling replicates strategy must be one of the valid options: [individual, pool].")
+        }
+
+    }
+
+
     test("main.nf succeeds with default `nf_test` params") {
         tag 'full'
 
@@ -431,9 +481,13 @@ nextflow_pipeline {
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_peaks.xls").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_peaks.narrowPeak").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_summits.bed").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_treat_pileup.bdg").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_control_lambda.bdg").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.xls").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.narrowPeak").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_summits.bed").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_treat_pileup.bdg").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_control_lambda.bdg").exists()
             // test coverage tracks for filtered BAMs published to data dir
             assert path("${params.publishDirData}/coverage/${readsChIPPERep1Lane1.getStemNameWithoutLane()}.bw").exists()
             assert path("${params.publishDirData}/coverage/${readsChIPPERep2Lane1.getStemNameWithoutLane()}.bw").exists()
@@ -447,6 +501,157 @@ nextflow_pipeline {
             // test phantompeakqualtools cross-correlation plots published to reports dir
             assert path("${params.publishDirReports}/.chip/phantompeakqualtools/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_cross-correlation.pdf").exists()
             assert path("${params.publishDirReports}/.chip/phantompeakqualtools/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_cross-correlation.pdf").exists()
+            // test deepTools PCA plots published to reports dir
+            assert path("${params.publishDirReports}/.chip/pca.png").exists()
+            assert path("${params.publishDirReports}/.chip/pca-data.txt").exists()
+            assert path("${params.publishDirReports}/.chip/correlation.png").exists()
+            assert path("${params.publishDirReports}/.chip/correlation-data.txt").exists()
+            // test MultiQC reports and data published to reports dir
+            assert path("${params.publishDirReports}/multiqc/reads/reads.html").exists()
+            assert path("${params.publishDirReports}/multiqc/reads/reads_data/").exists()
+            assert path("${params.publishDirReports}/multiqc/alignments/alignments.html").exists()
+            assert path("${params.publishDirReports}/multiqc/alignments/alignments_data/").exists()
+            assert path("${params.publishDirReports}/multiqc/chip/chip.html").exists()
+            assert path("${params.publishDirReports}/multiqc/chip/chip_data/").exists()
+            assert path("${params.publishDirReports}/multiqc/diff-chip-seq_nf-test/diff-chip-seq_nf-test.html").exists()
+            assert path("${params.publishDirReports}/multiqc/diff-chip-seq_nf-test/diff-chip-seq_nf-test_data/").exists()
+        }
+
+    }
+
+
+    test("main.nf succeeds with default `nf_test` params and peak calling on pooled replicates") {
+        tag 'full'
+        tag 'current'
+
+        // instantiate helper objects
+        def readsChIPPERep1Lane1  = new ReadsChIPPERep1Lane1()
+        def readsChIPPERep2Lane1  = new ReadsChIPPERep2Lane1()
+        def readsInputPERep1Lane1 = new ReadsInputPERep1Lane1()
+        def readsInputPERep2Lane1 = new ReadsInputPERep2Lane1()
+
+        when {
+            params {
+                publishDirReports    = "${outputDir}/reports"
+                publishDirData       = "${outputDir}/data"
+                peakCallRepsStrategy = 'pool'
+            }
+        }
+
+        then {
+            // test workflow status
+            assert workflow.success
+            /*
+                Count number succeeded tasks: 13 + (7 * (n fastq pairs)) + (8 * (n samples)) + (2 * (n chip-control sample pairs)) + (1 * (n chip-control collapsed datasets))
+                    - 2: Unzip genome and annotations
+                    - 2: Count bases in genome -- Index fasta and count
+                    - 1: Build reference genome index
+                    - 1: Compute effective genome size
+                    - 2 * (n fastq pairs): FastQC) -- Raw and prealigned
+                    - 1 * (n fastq pairs): Trim reads
+                    - 1 * (n fastq pairs): Map reads
+                    - 1 * (n fastq pairs): Sort and index SAMs
+                    - 3 * (n samples): Merge SAM, Mark dups, Sort by name
+                    - 2 * (n samples): Count bases in reads -- Raw and prealigned
+                    - 2 * (n fastq pairs): Samtools idxstats and flagstat
+                    - 1 * (n samples): Samtools stats
+                    - 1 * (n samples): Filter BAMs
+                    - 1 * (n samples): Coverage tracks -- Filtered BAMs
+                    - 1 * (n chip-control sample pairs): Comparison coverage tracks
+                    - 1 * (n chip-control sample pairs): phantompeakqualtools
+                    - 1 * (n chip-control collapsed datasets): Call peaks
+                    - 3: Binned summary plots -- Summarize, PCA plot, and correlation plot
+                    - 4: MultiQC -- Reads, mappings, peaks, full
+            */
+            assert workflow.trace.succeeded().size() == 78
+
+            // test raw FastQC html reports and zip files published to reports dir
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_raw_R1_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_raw_R1_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_raw_R2_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_raw_R2_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep2Lane1.getStemName()}_raw_R1_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep2Lane1.getStemName()}_raw_R1_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep2Lane1.getStemName()}_raw_R2_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep2Lane1.getStemName()}_raw_R2_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep1Lane1.getStemName()}_raw_R1_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep1Lane1.getStemName()}_raw_R1_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep1Lane1.getStemName()}_raw_R2_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep1Lane1.getStemName()}_raw_R2_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep2Lane1.getStemName()}_raw_R1_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep2Lane1.getStemName()}_raw_R1_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep2Lane1.getStemName()}_raw_R2_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep2Lane1.getStemName()}_raw_R2_fastqc.zip").exists()
+            // test prealign FastQC html reports and zip files published to reports dir
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_trimmed_R1_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_trimmed_R1_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_trimmed_R2_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep1Lane1.getStemName()}_trimmed_R2_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep2Lane1.getStemName()}_trimmed_R1_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep2Lane1.getStemName()}_trimmed_R1_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep2Lane1.getStemName()}_trimmed_R2_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsChIPPERep2Lane1.getStemName()}_trimmed_R2_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep1Lane1.getStemName()}_trimmed_R1_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep1Lane1.getStemName()}_trimmed_R1_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep1Lane1.getStemName()}_trimmed_R2_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep1Lane1.getStemName()}_trimmed_R2_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep2Lane1.getStemName()}_trimmed_R1_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep2Lane1.getStemName()}_trimmed_R1_fastqc.zip").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep2Lane1.getStemName()}_trimmed_R2_fastqc.html").exists()
+            assert path("${params.publishDirReports}/.fastqc/${readsInputPERep2Lane1.getStemName()}_trimmed_R2_fastqc.zip").exists()
+            // test trimmed reads logs published to reports dir
+            assert path("${params.publishDirReports}/.reads/trim/${readsChIPPERep1Lane1.getStemName()}_fastp.json").exists()
+            assert path("${params.publishDirReports}/.reads/trim/${readsChIPPERep2Lane1.getStemName()}_fastp.json").exists()
+            assert path("${params.publishDirReports}/.reads/trim/${readsInputPERep1Lane1.getStemName()}_fastp.json").exists()
+            assert path("${params.publishDirReports}/.reads/trim/${readsInputPERep2Lane1.getStemName()}_fastp.json").exists()
+            // test samtools flagstat and samtools idxstats for individual alignments files written to reports dir
+            assert path("${params.publishDirReports}/.alignments/${readsChIPPERep1Lane1.getStemName()}_idxstat.txt").exists()
+            assert path("${params.publishDirReports}/.alignments/${readsChIPPERep2Lane1.getStemName()}_idxstat.txt").exists()
+            assert path("${params.publishDirReports}/.alignments/${readsInputPERep1Lane1.getStemName()}_idxstat.txt").exists()
+            assert path("${params.publishDirReports}/.alignments/${readsInputPERep2Lane1.getStemName()}_idxstat.txt").exists()
+            assert path("${params.publishDirReports}/.alignments/${readsChIPPERep1Lane1.getStemName()}_samtools-flagstat.txt").exists()
+            assert path("${params.publishDirReports}/.alignments/${readsChIPPERep2Lane1.getStemName()}_samtools-flagstat.txt").exists()
+            assert path("${params.publishDirReports}/.alignments/${readsInputPERep1Lane1.getStemName()}_samtools-flagstat.txt").exists()
+            assert path("${params.publishDirReports}/.alignments/${readsInputPERep2Lane1.getStemName()}_samtools-flagstat.txt").exists()
+            // test samtools stats for merged alignments files written to reports dir
+            assert path("${params.publishDirReports}/.alignments/${readsChIPPERep1Lane1.getStemNameWithoutLane()}_samtools-stats.txt").exists()
+            assert path("${params.publishDirReports}/.alignments/${readsChIPPERep2Lane1.getStemNameWithoutLane()}_samtools-stats.txt").exists()
+            assert path("${params.publishDirReports}/.alignments/${readsInputPERep1Lane1.getStemNameWithoutLane()}_samtools-stats.txt").exists()
+            assert path("${params.publishDirReports}/.alignments/${readsInputPERep2Lane1.getStemNameWithoutLane()}_samtools-stats.txt").exists()
+            // test BAM and BAM.BAI alignment and index files published to data dir
+            assert path("${params.publishDirData}/alignments/${readsChIPPERep1Lane1.getStemNameWithoutLane()}.bam").exists()
+            assert path("${params.publishDirData}/alignments/${readsChIPPERep1Lane1.getStemNameWithoutLane()}.bam.bai").exists()
+            assert path("${params.publishDirData}/alignments/${readsChIPPERep2Lane1.getStemNameWithoutLane()}.bam").exists()
+            assert path("${params.publishDirData}/alignments/${readsChIPPERep2Lane1.getStemNameWithoutLane()}.bam.bai").exists()
+            assert path("${params.publishDirData}/alignments/${readsInputPERep1Lane1.getStemNameWithoutLane()}.bam").exists()
+            assert path("${params.publishDirData}/alignments/${readsInputPERep1Lane1.getStemNameWithoutLane()}.bam.bai").exists()
+            assert path("${params.publishDirData}/alignments/${readsInputPERep2Lane1.getStemNameWithoutLane()}.bam").exists()
+            assert path("${params.publishDirData}/alignments/${readsInputPERep2Lane1.getStemNameWithoutLane()}.bam.bai").exists()
+            // test filtered BAM and BAM.BAI alignment and index files published to data dir
+            assert path("${params.publishDirData}/alignments/filtered/${readsChIPPERep1Lane1.getStemNameWithoutLane()}_filtered.bam").exists()
+            assert path("${params.publishDirData}/alignments/filtered/${readsChIPPERep1Lane1.getStemNameWithoutLane()}_filtered.bam.bai").exists()
+            assert path("${params.publishDirData}/alignments/filtered/${readsChIPPERep2Lane1.getStemNameWithoutLane()}_filtered.bam").exists()
+            assert path("${params.publishDirData}/alignments/filtered/${readsChIPPERep2Lane1.getStemNameWithoutLane()}_filtered.bam.bai").exists()
+            assert path("${params.publishDirData}/alignments/filtered/${readsInputPERep1Lane1.getStemNameWithoutLane()}_filtered.bam").exists()
+            assert path("${params.publishDirData}/alignments/filtered/${readsInputPERep1Lane1.getStemNameWithoutLane()}_filtered.bam.bai").exists()
+            assert path("${params.publishDirData}/alignments/filtered/${readsInputPERep2Lane1.getStemNameWithoutLane()}_filtered.bam").exists()
+            assert path("${params.publishDirData}/alignments/filtered/${readsInputPERep2Lane1.getStemNameWithoutLane()}_filtered.bam.bai").exists()
+            // test MACS3 peak calling outputs published to data dir
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCallsPoolReps()}_peaks.xls").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCallsPoolReps()}_peaks.narrowPeak").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCallsPoolReps()}_summits.bed").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCallsPoolReps()}_treat_pileup.bdg").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCallsPoolReps()}_control_lambda.bdg").exists()
+            // test coverage tracks for filtered BAMs published to data dir
+            assert path("${params.publishDirData}/coverage/${readsChIPPERep1Lane1.getStemNameWithoutLane()}.bw").exists()
+            assert path("${params.publishDirData}/coverage/${readsChIPPERep2Lane1.getStemNameWithoutLane()}.bw").exists()
+            assert path("${params.publishDirData}/coverage/${readsInputPERep1Lane1.getStemNameWithoutLane()}.bw").exists()
+            assert path("${params.publishDirData}/coverage/${readsInputPERep2Lane1.getStemNameWithoutLane()}.bw").exists()
+            // test coverage tracks comparing ChIP to Control for filtered BAMs published to data dir
+            assert path("${params.publishDirData}/coverage/${readsChIPPERep1Lane1.getStemNamePeakCalls()}.bw").exists()
+            assert path("${params.publishDirData}/coverage/${readsChIPPERep2Lane1.getStemNamePeakCalls()}.bw").exists()
+            // test phantompeakqualtools cross-correlation plots published to reports dir
+            assert path("${params.publishDirReports}/.chip/phantompeakqualtools/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_cross-correlation.pdf").exists()
             // test deepTools PCA plots published to reports dir
             assert path("${params.publishDirReports}/.chip/pca.png").exists()
             assert path("${params.publishDirReports}/.chip/pca-data.txt").exists()
@@ -587,9 +792,13 @@ nextflow_pipeline {
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_peaks.xls").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_peaks.narrowPeak").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_summits.bed").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_treat_pileup.bdg").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_control_lambda.bdg").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.xls").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.narrowPeak").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_summits.bed").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_treat_pileup.bdg").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_control_lambda.bdg").exists()
             // test coverage tracks for filtered BAMs published to data dir
             assert path("${params.publishDirData}/coverage/${readsChIPPERep1Lane1.getStemNameWithoutLane()}.bw").exists()
             assert path("${params.publishDirData}/coverage/${readsChIPPERep2Lane1.getStemNameWithoutLane()}.bw").exists()
@@ -750,9 +959,13 @@ nextflow_pipeline {
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_peaks.xls").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_peaks.narrowPeak").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_summits.bed").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_treat_pileup.bdg").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_control_lambda.bdg").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.xls").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_peaks.narrowPeak").exists()
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_summits.bed").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_treat_pileup.bdg").exists()
+            assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_control_lambda.bdg").exists()
             // test ChIPQC report published to reports dir
             assert path("${params.publishDirReports}/.chip/ChIPQCreport").exists()
             // test phantompeakqualtools cross-correlation plots published to reports dir

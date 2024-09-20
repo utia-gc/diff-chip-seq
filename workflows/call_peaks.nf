@@ -7,6 +7,7 @@ workflow CALL_PEAKS {
     take:
         alignments
         genome
+        replicates_strategy
 
     main:
         // compute effective genome size
@@ -14,7 +15,37 @@ workflow CALL_PEAKS {
 
         // pair ChIP samples with their Controls
         Pair_ChIP_Control_Alignments(alignments)
-        ch_pairedChIPControlAlignments = Pair_ChIP_Control_Alignments.out.pairedChIPControlAlignments
+
+        switch( replicates_strategy.toUpperCase() ) {
+            case 'INDIVIDUAL':
+                ch_pairedChIPControlAlignments = Pair_ChIP_Control_Alignments.out.pairedChIPControlAlignments
+                break
+
+            case 'POOL':
+                ch_pairedChIPControlAlignments = Pair_ChIP_Control_Alignments.out.pairedChIPControlAlignments
+                    .map { meta, chipBam, chipBai, controlBam, controlBai ->
+                        return [
+                            buildPoolReplicatesGroupKey(meta),
+                            meta,
+                            chipBam,
+                            chipBai,
+                            controlBam,
+                            controlBai
+                        ]
+                    }
+                    .groupTuple()
+                    .map { mappingsGroupKey, meta, chipBam, chipBai, controlBam, controlBai ->
+                        return [
+                            // combine metadata
+                            MetadataUtils.intersectListOfMetadata(meta),
+                            chipBam,
+                            chipBai,
+                            controlBam,
+                            controlBai
+                        ]
+                    }
+                break
+        }
 
         // Perform peak calling
         macs3_callpeak(
@@ -28,3 +59,14 @@ workflow CALL_PEAKS {
 }
 
 
+String buildPoolReplicatesGroupKey(metadata) {
+    // the grouping key begins with the sample name
+    ArrayList pairGroupKeyComponents = [metadata.sampleName]
+
+    // if the sample metadata contains all the chip information, add it
+    // don't add mode since this would prevent chip and control samples from having a common key
+    if (metadata.target) pairGroupKeyComponents += metadata.target
+    if (metadata.controlType) pairGroupKeyComponents += "${metadata.controlType}-control"
+
+    return pairGroupKeyComponents.join('_')
+}

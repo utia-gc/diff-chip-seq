@@ -100,6 +100,23 @@
       },
       "required": ["mapTool"]
     },
+    "peak_calling_parameters": {
+      "title": "Peak calling parameters",
+      "type": "object",
+      "description": "",
+      "default": "",
+      "properties": {
+        "peakCallRepsStrategy": {
+          "type": "string",
+          "description": "Perform peak calling on individual or pooled replicates?",
+          "default": "individual",
+          "enum": ["individual", "pool"],
+          "help_text": "'individual' performs peak calling on each replicate individually.\n'pool' performs peak calling on all replicates of a sample pooled together.",
+          "errorMessage": "Peak calling replicates strategy must be one of the valid options: [individual, pool]."
+        }
+      },
+      "required": ["peakCallRepsStrategy"]
+    },
     "skip_steps_options": {
       "title": "Skip steps options",
       "type": "object",
@@ -122,6 +139,9 @@
     },
     {
       "$ref": "#/defs/mapping_parameters"
+    },
+    {
+      "$ref": "#/defs/peak_calling_parameters"
     },
     {
       "$ref": "#/defs/skip_steps_options"
