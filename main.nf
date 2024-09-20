@@ -64,7 +64,8 @@ workflow {
 
     CALL_PEAKS(
         ch_alignmentsMergedFiltered,
-        ch_genome
+        ch_genome,
+        params.peakCallRepsStrategy
     )
     ch_callPeaksLog = CALL_PEAKS.out.callPeaksLog
 
