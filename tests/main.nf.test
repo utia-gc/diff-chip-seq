@@ -312,6 +312,56 @@ nextflow_pipeline {
     }
 
 
+    test("main.nf fails -- no peak calling replicate strategy.") {
+        tag 'nf-schema'
+        tag 'validate'
+        tag 'tools'
+
+        when {
+            params {
+                publishDirReports    = "${outputDir}/reports"
+                publishDirData       = "${outputDir}/data"
+                peakCallRepsStrategy = null
+            }
+        }
+
+        then {
+            // nf-schema validateParameters() causes workflow failure with exit status 1 when required param(s) don't match pattern
+            assert workflow.failed
+            assert workflow.exitStatus == 1
+            // nf-schema validateParameters() throws error messages on stdout and stderr when required param(s) don't match pattern
+            assert workflow.stdout.contains("ERROR ~ Validation of pipeline parameters failed!")
+            assert workflow.stderr.contains("* Missing required parameter(s): peakCallRepsStrategy")
+        }
+
+    }
+
+
+    test("main.nf fails -- invalid peak calling replicate strategy.") {
+        tag 'nf-schema'
+        tag 'validate'
+        tag 'tools'
+
+        when {
+            params {
+                publishDirReports    = "${outputDir}/reports"
+                publishDirData       = "${outputDir}/data"
+                peakCallRepsStrategy = "separate"
+            }
+        }
+
+        then {
+            // nf-schema validateParameters() causes workflow failure with exit status 1 when required param(s) don't match pattern
+            assert workflow.failed
+            assert workflow.exitStatus == 1
+            // nf-schema validateParameters() throws error messages on stdout and stderr when required param(s) don't match pattern
+            assert workflow.stdout.contains("ERROR ~ Validation of pipeline parameters failed!")
+            assert workflow.stderr.contains("* --peakCallRepsStrategy (separate): Peak calling replicates strategy must be one of the valid options: [individual, pool].")
+        }
+
+    }
+
+
     test("main.nf succeeds with default `nf_test` params") {
         tag 'full'
 
