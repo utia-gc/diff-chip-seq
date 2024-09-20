@@ -4,7 +4,7 @@ nextflow_workflow {
     script "workflows/call_peaks.nf"
     workflow "CALL_PEAKS"
 
-    test("CALL_PEAKS calls peaks for paired ChIP and Input files -- macs3.") {
+    test("CALL_PEAKS calls peaks for paired ChIP and Input files -- macs3 separate replicates.") {
         // instantiate helper objects
         def readsChIPPERep1Lane1  = new ReadsChIPPERep1Lane1()
         def readsInputPERep1Lane1 = new ReadsInputPERep1Lane1()

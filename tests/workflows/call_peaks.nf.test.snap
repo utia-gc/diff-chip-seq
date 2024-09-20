@@ -1,5 +1,5 @@
 {
-    "CALL_PEAKS calls peaks for paired ChIP and Input files -- macs3.": {
+    "CALL_PEAKS calls peaks for paired ChIP and Input files -- macs3 separate replicates.": {
         "content": [
             {
                 "0": [
@@ -56,6 +56,6 @@
             "nf-test": "0.9.0",
             "nextflow": "23.10.1"
         },
-        "timestamp": "2024-09-16T09:50:28.294462414"
+        "timestamp": "2024-09-20T10:26:17.344331462"
     }
 }
