@@ -444,6 +444,9 @@ nextflow_pipeline {
             assert path("${params.publishDirData}/coverage/${readsChIPPERep2Lane1.getStemNamePeakCalls()}.bw").exists()
             // test ChIPQC report published to reports dir
             assert path("${params.publishDirReports}/.chip/ChIPQCreport").exists()
+            // test phantompeakqualtools cross-correlation plots published to reports dir
+            assert path("${params.publishDirReports}/.chip/phantompeakqualtools/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_cross-correlation.pdf").exists()
+            assert path("${params.publishDirReports}/.chip/phantompeakqualtools/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_cross-correlation.pdf").exists()
             // test deepTools PCA plots published to reports dir
             assert path("${params.publishDirReports}/.chip/pca.png").exists()
             assert path("${params.publishDirReports}/.chip/pca-data.txt").exists()
@@ -597,6 +600,9 @@ nextflow_pipeline {
             assert path("${params.publishDirData}/coverage/${readsChIPPERep2Lane1.getStemNamePeakCalls()}.bw").exists()
             // test ChIPQC report published to reports dir
             assert path("${params.publishDirReports}/.chip/ChIPQCreport").exists()
+            // test phantompeakqualtools cross-correlation plots published to reports dir
+            assert path("${params.publishDirReports}/.chip/phantompeakqualtools/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_cross-correlation.pdf").exists()
+            assert path("${params.publishDirReports}/.chip/phantompeakqualtools/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_cross-correlation.pdf").exists()
             // test deepTools PCA plots published to reports dir
             assert path("${params.publishDirReports}/.chip/pca.png").exists()
             assert path("${params.publishDirReports}/.chip/pca-data.txt").exists()
@@ -749,6 +755,9 @@ nextflow_pipeline {
             assert path("${params.publishDirData}/peaks/macs3/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_summits.bed").exists()
             // test ChIPQC report published to reports dir
             assert path("${params.publishDirReports}/.chip/ChIPQCreport").exists()
+            // test phantompeakqualtools cross-correlation plots published to reports dir
+            assert path("${params.publishDirReports}/.chip/phantompeakqualtools/${readsChIPPERep1Lane1.getStemNamePeakCalls()}_cross-correlation.pdf").exists()
+            assert path("${params.publishDirReports}/.chip/phantompeakqualtools/${readsChIPPERep2Lane1.getStemNamePeakCalls()}_cross-correlation.pdf").exists()
             // test deepTools PCA and correlation plots published to reports dir
             assert path("${params.publishDirReports}/.chip/pca.png").exists()
             assert path("${params.publishDirReports}/.chip/pca-data.txt").exists()
