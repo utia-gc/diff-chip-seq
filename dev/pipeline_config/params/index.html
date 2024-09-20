@@ -22,7 +22,7 @@
     
     
       
-        <title>Params - utia-gc/diff-chip-seq</title>
+        <title>utia-gc/diff-chip-seq pipeline parameters - utia-gc/diff-chip-seq</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#params" class="md-skip">
+        <a href="#utia-gcdiff-chip-seq-pipeline-parameters" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Params
+              utia-gc/diff-chip-seq pipeline parameters
             
           </span>
         </div>
@@ -719,7 +719,7 @@
           
   
   <span class="md-ellipsis">
-    Params
+    utia-gc/diff-chip-seq pipeline parameters
   </span>
   
 
@@ -730,7 +730,7 @@
         
   
   <span class="md-ellipsis">
-    Params
+    utia-gc/diff-chip-seq pipeline parameters
   </span>
   
 
@@ -764,6 +764,24 @@
   <a href="#read-trimfilter-options" class="md-nav__link">
     <span class="md-ellipsis">
       Read trim/filter options
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mapping-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mapping parameters
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#peak-calling-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Peak calling parameters
     </span>
   </a>
   
@@ -969,6 +987,24 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#mapping-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mapping parameters
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#peak-calling-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Peak calling parameters
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#skip-steps-options" class="md-nav__link">
     <span class="md-ellipsis">
       Skip steps options
@@ -1008,7 +1044,7 @@
   
 
 
-<h1 id="params">Params</h1>
+<h1 id="utia-gcdiff-chip-seq-pipeline-parameters">utia-gc/diff-chip-seq pipeline parameters</h1>
 <p>A Nextflow pipeline for base NGS analysis.</p>
 <h2 id="inputoutput-options">Input/output options</h2>
 <table>
@@ -1044,7 +1080,7 @@
 <td>A path or URL to the reference genome sequence file in fasta format. <details><summary>Help</summary><small>For reasons of reproducibility and portability we recommend using direct links to reference genome sequence files available through repositories such as RefSeq and Ensembl.</small></details></td>
 <td><code>string</code></td>
 <td></td>
-<td></td>
+<td>True</td>
 <td></td>
 </tr>
 <tr>
@@ -1052,7 +1088,7 @@
 <td>A path or URL to the reference genome annotations file in GTF format. <details><summary>Help</summary><small>For reasons of reproducibility and portability we recommend using direct links to reference annotation files available through repositories such as RefSeq and Ensembl.</small></details></td>
 <td><code>string</code></td>
 <td></td>
-<td></td>
+<td>True</td>
 <td></td>
 </tr>
 <tr>
@@ -1095,11 +1131,65 @@
 </thead>
 <tbody>
 <tr>
+<td><code>trimTool</code></td>
+<td>Tool for read trimming/filtering.</td>
+<td><code>string</code></td>
+<td>fastp</td>
+<td>True</td>
+<td></td>
+</tr>
+<tr>
 <td><code>adapterFasta</code></td>
 <td>Fasta file of adapters for read trimming. <details><summary>Help</summary><small><code>cutadapt</code> does not currently work with an adapter fasta file.</small></details></td>
 <td><code>string</code></td>
 <td>${projectDir}/assets/NO_FILE</td>
 <td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="mapping-parameters">Mapping parameters</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+<th>Required</th>
+<th>Hidden</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mapTool</code></td>
+<td>Tool for mapping reads.</td>
+<td><code>string</code></td>
+<td>bwamem2</td>
+<td>True</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="peak-calling-parameters">Peak calling parameters</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+<th>Required</th>
+<th>Hidden</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>peakCallRepsStrategy</code></td>
+<td>Perform peak calling on individual or pooled replicates? <details><summary>Help</summary><small>'individual' performs peak calling on each replicate individually.<br>'pool' performs peak calling on all replicates of a sample pooled together.</small></details></td>
+<td><code>string</code></td>
+<td>individual</td>
+<td>True</td>
 <td></td>
 </tr>
 </tbody>
